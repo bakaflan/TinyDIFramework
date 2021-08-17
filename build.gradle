@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+group 'com.zeroling'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+
+    flatDir {
+        dirs 'jar'
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    implementation 'com.google.guava:guava:30.0-jre'
+    implementation 'org.projectlombok:lombok:1.18.20'
+    implementation 'javax.inject:javax.inject:1'
+
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+}
+
+test {
+    useJUnitPlatform()
+}
