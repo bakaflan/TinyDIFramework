@@ -2,11 +2,9 @@
 
 TinyDI 是一个基于DI模式实现的一个轻量级DI框架，支持通过构造器注入依赖。
 
-## 
-
 ## DI framework Sbe
 
-依赖注入是一种我们可以用来实现控制反转的一种模式，通过将类生命周期的管理交给容器进行管理得以实现。
+依赖注入是一种可以用来实现控制反转的一种模式，通过将类生命周期的管理交给容器进行管理得以实现。
 通常来讲，当需要申明一个类的依赖时会有如下代码
 ```java
 public class Car {
@@ -55,7 +53,7 @@ container.getInstance(Wheel.class) //throw CreateInstanceFailedException
 ## 如何注入
 1. 使用@Inject注解进行标注
 
-   我们推荐使用构造器注入的方式进行依赖注入。
+   推荐使用构造器注入的方式进行依赖注入。
 
    假设当前容器中已经注册了类Wheel。
 
@@ -74,3 +72,29 @@ container.getInstance(Wheel.class) //throw CreateInstanceFailedException
    使用@Inject可以让容器知道这里需要注入依赖。
 
    当该类被容器实例化时，容器会调用其构造函数，发现构造函数被@Inject注解，就会在容器中寻找其所需依赖，并调用其构造方法，从而正确的注入依赖。
+
+   当类与类之间存在循环依赖的时候，会抛出一个CreateInstanceErrorException异常
+```java
+public class A{
+    private B b;
+    public A (B b){
+        this.b = b;
+    }
+}
+
+public class B{
+    private A a;
+    public B (A a){
+        this.a = a;
+    }
+}
+```
+在这样的情况下 类A与类B 相互依赖，在这样的情况下无法正常的实例化，因此会抛出一个异常                      
+
+2. 使用@Singleton注解实现单例
+   
+   在构建实例时，如果希望某一个实例在实例化为单例，即该对象只会被实例化一次时。可以使用
+@Singleton注解。
+   
+   使用@Singleton注解对类进行标注，容器在实例化该类后，会持有该类，在其他类对该类有依赖时，容器会
+始终将同一个实例注入

@@ -1,8 +1,8 @@
 package com.bakaflan.di;
 
+import com.bakaflan.di.annotation.Inject;
 import com.bakaflan.di.exception.CreatInstanceErrorException;
 
-import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClassHelper {
-    public static Constructor<?> pickInjectableConstructor(Class<?> clazz) {
+    public static Constructor<?>  pickInjectableConstructor(Class<?> clazz) {
         Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
         List<Constructor<?>> constructors = Arrays.stream(declaredConstructors)
                 .filter(item -> Modifier.isPublic(item.getModifiers()))
