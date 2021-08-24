@@ -1,7 +1,10 @@
 import com.bakaflan.di.CircleDependOne;
 import com.bakaflan.di.Container;
 import com.bakaflan.di.Foo;
+import com.bakaflan.di.FooSecond;
+import com.bakaflan.di.SingletonClass;
 import com.bakaflan.di.exception.CreatInstanceErrorException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,5 +24,13 @@ public class BaseTest {
     void should_throw_error_when_circle_depend() {
         Container container = new Container();
         assertThrows(CreatInstanceErrorException.class, () -> container.getInstance(CircleDependOne.class));
+    }
+
+    @Test
+    void should_get_singleton_instance(){
+        Container container = new Container();
+        SingletonClass singletonClass = container.getInstance(Foo.class).getSingletonClass();
+        SingletonClass singletonClass1 = container.getInstance(FooSecond.class).getSingletonClass();
+        assertEquals(singletonClass.hashCode(), singletonClass1.hashCode());
     }
 }
