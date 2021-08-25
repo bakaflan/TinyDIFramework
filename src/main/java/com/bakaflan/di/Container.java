@@ -1,5 +1,6 @@
 package com.bakaflan.di;
 
+import com.bakaflan.di.annotation.Named;
 import com.bakaflan.di.annotation.Singleton;
 import com.bakaflan.di.exception.CreatInstanceErrorException;
 
@@ -16,6 +17,14 @@ import java.util.Set;
 public class Container {
     private Set<Class<?>> registeredClasses = Collections.synchronizedSet(new HashSet<>());
     private Map<Class<?>, Object> singletonClasses = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, Class<?>> namedClassMap = Collections.synchronizedMap(new HashMap<>());
+
+    public void putNamedClass(Class<?> clazz){
+        if(clazz.isAnnotationPresent(Named.class)){
+            Named annotation = clazz.getAnnotation(Named.class);
+            namedClassMap.put(annotation.value(), clazz);
+        }
+    }
 
     public <T> T getInstance(Class<T> clazz){
         Constructor<T> constructor = (Constructor<T>) InjectHelper.pickInjectableConstructor(clazz);
@@ -35,7 +44,12 @@ public class Container {
             if(registeredClasses.contains(item.getType())){
                 throw new CreatInstanceErrorException(String.format("Circle dependency for class %s", constructor.getDeclaringClass().getSimpleName()));
             }
-            Class<?> temp = item.getType();
+            Class<?> temp;
+            if(namedClassMap.containsKey(item.getName())){
+                temp = namedClassMap.get(item.getName());
+            }else {
+                temp = item.getType();
+            }
             return getInstance(temp);
         }).toArray();
         T result;
