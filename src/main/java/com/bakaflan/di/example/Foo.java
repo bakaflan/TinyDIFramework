@@ -1,18 +1,22 @@
-package com.bakaflan.di;
+package com.bakaflan.di.example;
 
 import com.bakaflan.di.annotation.Inject;
-import com.bakaflan.di.annotation.Singleton;
 
-public class FooSecond {
+public class Foo {
+    private Boo boo;
     private SingletonClass singletonClass;
 
     @Inject
-    public FooSecond(SingletonClass singletonClass) {
+    public Foo(Boo boo, SingletonClass singletonClass) {
+        this.boo = boo;
         this.singletonClass = singletonClass;
+    }
+
+    public Boo getBoo() {
+        return boo;
     }
 
     public SingletonClass getSingletonClass() {
         return singletonClass;
     }
 }
-

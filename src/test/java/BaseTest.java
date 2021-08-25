@@ -1,10 +1,9 @@
-import com.bakaflan.di.CircleDependOne;
+import com.bakaflan.di.example.CircleDependOne;
 import com.bakaflan.di.Container;
-import com.bakaflan.di.Foo;
-import com.bakaflan.di.FooSecond;
-import com.bakaflan.di.SingletonClass;
+import com.bakaflan.di.example.Foo;
+import com.bakaflan.di.example.FooSecond;
+import com.bakaflan.di.example.SingletonClass;
 import com.bakaflan.di.exception.CreatInstanceErrorException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

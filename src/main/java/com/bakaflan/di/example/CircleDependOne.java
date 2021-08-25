@@ -1,4 +1,4 @@
-package com.bakaflan.di;
+package com.bakaflan.di.example;
 
 import com.bakaflan.di.annotation.Inject;
 

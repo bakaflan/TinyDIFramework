@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ClassHelper {
+public class InjectHelper {
     public static Constructor<?>  pickInjectableConstructor(Class<?> clazz) {
         Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
         List<Constructor<?>> constructors = Arrays.stream(declaredConstructors)

@@ -1,9 +1,7 @@
 package com.bakaflan.di;
 
-import com.bakaflan.di.annotation.Inject;
 import com.bakaflan.di.annotation.Singleton;
 import com.bakaflan.di.exception.CreatInstanceErrorException;
-import org.checkerframework.checker.units.qual.A;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -20,14 +18,18 @@ public class Container {
     private Map<Class<?>, Object> singletonClasses = Collections.synchronizedMap(new HashMap<>());
 
     public <T> T getInstance(Class<T> clazz){
-        Constructor<T> constructor = (Constructor<T>) ClassHelper.pickInjectableConstructor(clazz);
-        if(clazz.isAnnotationPresent(Singleton.class)){
-            Object singletonInstance = singletonClasses.get(clazz);
-            if(Objects.nonNull(singletonInstance)){
-                return (T) singletonInstance;
-            }
-        }
+        Constructor<T> constructor = (Constructor<T>) InjectHelper.pickInjectableConstructor(clazz);
+        T singletonInstance = getSingletoInstance(clazz);
+        if (singletonInstance != null) return singletonInstance;
 
+        T result = createInstance(clazz, constructor);
+        if(clazz.isAnnotationPresent(Singleton.class)){
+            singletonClasses.put(clazz, result);
+        }
+        return result;
+    }
+
+    private <T> T createInstance(Class<T> clazz, Constructor<T> constructor) {
         registeredClasses.add(clazz);
         Object[] params = Arrays.stream(constructor.getParameters()).map(item -> {
             if(registeredClasses.contains(item.getType())){
@@ -40,12 +42,21 @@ public class Container {
         try {
             result = constructor.newInstance(params);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            registeredClasses.clear();
             throw new CreatInstanceErrorException(String.format("Create instance error from %s constructor", constructor.getDeclaringClass().getSimpleName()));
         }
+
         registeredClasses.remove(clazz);
-        if(clazz.isAnnotationPresent(Singleton.class)){
-            singletonClasses.put(clazz, result);
-        }
         return result;
+    }
+
+    private <T> T getSingletoInstance(Class<T> clazz) {
+        if(clazz.isAnnotationPresent(Singleton.class)){
+            Object singletonInstance = singletonClasses.get(clazz);
+            if(Objects.nonNull(singletonInstance)){
+                return (T) singletonInstance;
+            }
+        }
+        return null;
     }
 }
