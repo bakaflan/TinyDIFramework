@@ -98,3 +98,59 @@ public class B{
    
    使用@Singleton注解对类进行标注，容器在实例化该类后，会持有该类，在其他类对该类有依赖时，容器会
 始终将同一个实例注入
+```java
+public class A {
+    private SingeletonClass singeletonClass;
+    
+    @Inject
+    public A (SingeltonClasss singeltonClasss){
+        this.singeletonClass = singeltonClasss;
+    }
+}
+
+public class B{
+   private SingeletonClass singeletonClass;
+   
+   @Inject
+   public B (SingeltonClasss singeltonClasss){
+      this.singeletonClass = singeltonClasss;
+   }
+}
+
+A a = container.getInstance(A.class);
+B b = container.getInstance(B.class);
+a.getSingletonClass().hashCode()
+        .equal(b.getSingletonClass.hashCode()) //true
+
+```
+
+3. 使用@Named与@Qualified注解申明不同的实现
+
+当一个接口有多个以上的实现时，容器就不能确定应该使用哪一个注解，此时应当使用@Named或者@Qualified注解标注具体的实现类，
+这样容器在注入的时候就能分辨出应该注入哪一个实现
+```java
+
+public interface Listener{
+    
+}
+
+@Named("sony")
+public class SonyListener implements Listener{
+    
+}
+
+@Named("ath")
+public class AthListener implements Listener{
+    
+}
+
+public class MyDevice{
+    private Listener listener;
+    
+    @Inject
+    public MyDevice(@Named("ath")Listener listener){
+        this.listener = listener;
+    }
+}
+
+```
