@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>ContainerTest</title>
+</head>
+<body>
+
+<h2>1. 从容器中获取实例</h2>
+
+从容器中获取一个类的实例。
+当需要获取实例的时，可以通过getInstance()方法获取到相应的实例
+
+<h3>例子1：通过容器获取一个类的实例</h3>
+<div class="example">
+    例如对于一个用户自定义的类,使用@Inject标注其公共的构造方法，就可以通过容器获取到该类的实例
+    <span class="variable" data-name="className">Foo</span>
+    <pre><code>
+        public class Foo {
+            private Boo boo;
+            @Inject
+            public Foo(Boo boo) {
+                this.boo = boo;
+            }
+        }
+    </code></pre>
+    首先<span class="function" data-action="initContainer">初始化一个容器</span>
+    <span class="function" data-action="getInstance" data-params="className" data-return="instance">从容器中直接获取一个</span>
+    <span class="assertion" data-action="getClassName" data-expect="equal" data-params="instance">Foo</span>的实例
+    <pre><code>
+        container.getInstance(Foo.class);
+    </code></pre>
+</div>
+
+<div class="example">
+    当一个类没有被@Inject标记时，类似如下代码，此时容器依然可以提供实例
+    <span class="variable" data-name="className">Foo</span>
+    <pre><code>
+        public class Foo {
+            private Boo boo;
+            @Inject
+            public Foo(Boo boo) {
+                this.boo = boo;
+            }
+        }
+
+        public class Boo{
+            public Boo(){}
+        }
+    </code></pre>
+    首先<span class="function" data-action="initContainer">初始化一个容器</span>
+    <span class="function" data-action="getInstance" data-params="className" data-return="instance">从容器中直接获取一个</span>
+    <span class="assertion" data-action="getClassName" data-expect="equal" data-params="instance">Foo</span>的实例
+    <pre><code>
+        container.getInstance(Foo.class);
+    </code></pre>
+</div>
+
+<h3>例子2：通过容器获取一个类的单例,</h3>
+<div class="example">
+    在实际的编写过程中，会出现两个类需要依赖与同一个实例的情况，此时可以用过@Singleton注解标注需要注入为单例的目标类<br>
+    这样，容器在实例化其他类时，会根据依赖注入一个单例的实例。
+    <span class="variable" data-name="classNameOne">Foo</span>
+    <span class="variable" data-name="classNameSecond">FooSecond</span>
+    <pre><code>
+        public class Foo {
+            private SingletonClass singletonClass;
+            private SingletonClass singletonClassTsu;
+
+            @Inject
+            public Foo(SingletonClass singletonClass,
+                        SingletonClass singletonClassTsu) {
+                this.singletonClass = singletonClass;
+                this.singletonClassTsu = singletonClassTsu;
+            }
+        }
+
+        @Singleton
+        public class SingletonClass {
+
+        }
+    </code></pre>
+    首先<span class="function" data-action="initContainer">初始化一个容器</span>
+    <span class="function" data-action="getInstance" data-params="classNameOne" data-return="instanceOne">从容器中直接获取一个</span>
+    <span class="assertion" data-action="getClassName" data-expect="equal" data-params="instance">Foo</span>的实例。
+
+    <span class="assertion" data-action="isSame" data-expect="true" data-params="instance">类的依赖为同一个单例</span>
+
+    <pre><code>
+        container.getInstance(Foo.class);
+    </code></pre>
+</div>
+
+</body>
+</html>

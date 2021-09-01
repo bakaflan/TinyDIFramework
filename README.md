@@ -35,19 +35,9 @@ Car依赖与Wheel，当Car初始化时，容器（Container）会在上下文（
 
 只有当一个类被注册到容器中时，容器才能在需要注入的时候找到该类
 
-1. 将一个类注册到容器当中。注册一个类到容器当中可以使用register()命令
+2. 从容器中获取一个类的实例。当需要获取实例的时，可以通过getInstance()方法获取到相应的实例
 ```java
-container.register(Wheel.class)
-```
-2. 从容器中获取一个类的实例。已经被注册到容器中的类，容器会维护其实例的生命周期，当需要获取该实例的时候，
-   可以通过getInstance()方法获取到相应的实例
-```java
-container.register(Wheel.class)
 container.getInstance(Wheel.class) 
-```
-3. 如果想要获取一个未被注册到容器中的类的实例时，此时显然会抛出一个错误
-```java
-container.getInstance(Wheel.class) //throw CreateInstanceFailedException
 ```
 
 ## 如何注入
