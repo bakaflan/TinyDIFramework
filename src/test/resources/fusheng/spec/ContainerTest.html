@@ -56,7 +56,7 @@
     </code></pre>
 </div>
 
-<h3>例子2：通过容器获取一个类的单例,</h3>
+<h3>例子2：通过容器获取一个类的单例</h3>
 <div class="example">
     在实际的编写过程中，会出现两个类需要依赖与同一个实例的情况，此时可以用过@Singleton注解标注需要注入为单例的目标类<br>
     这样，容器在实例化其他类时，会根据依赖注入一个单例的实例。
@@ -90,6 +90,41 @@
         container.getInstance(Foo.class);
     </code></pre>
 </div>
+
+<h3>异常情况1 ：尝试通过容器获取一个有循环依赖的类的单例</h3>
+
+<div class="example">
+    当两个类相互依赖时，在实例化其中一个类A的时候会需要另外一个类B的实例，但是获取类B的实例时又需要一个类A的实例。<br>
+    在这样循环依赖的情况下，试图从容器中获取实例时，会抛出一个错误循环依赖的错误
+    <span class="variable" data-name="className">CircleDependOne</span>
+    <pre><code>
+        public class CircleDependOne {
+            private CircleDependSecond circleDependSecond;
+
+            @Inject
+            public CircleDependOne(CircleDependSecond circleDependSecond) {
+                this.circleDependSecond = circleDependSecond;
+            }
+        }
+
+        public class CircleDependSecond {
+            private CircleDependOne circleDependOne;
+
+            @Inject
+            public CircleDependSecond(CircleDependOne circleDependOne) {
+                this.circleDependOne = circleDependOne;
+            }
+        }
+    </code></pre>
+    首先<span class="function" data-action="initContainer">初始化一个容器</span>
+    从容器中获取一个有循环依赖的实例会得到
+    <span class="assertion" data-action="getCircleDependInstance" data-expect="equal" data-params="className">创建实例失败</span>
+    的结果
+    <pre><code>
+        container.getInstance(CircleDependOne.class);
+    </code></pre>
+</div>
+
 
 </body>
 </html>
