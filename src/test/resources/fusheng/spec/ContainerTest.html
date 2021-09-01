@@ -56,7 +56,7 @@
     </code></pre>
 </div>
 
-<h3>例子2：通过容器获取一个类的单例</h3>
+<h3>例子2：通过容器进行单例依赖注入</h3>
 <div class="example">
     在实际的编写过程中，会出现两个类需要依赖与同一个实例的情况，此时可以用过@Singleton注解标注需要注入为单例的目标类<br>
     这样，容器在实例化其他类时，会根据依赖注入一个单例的实例。
@@ -88,6 +88,54 @@
 
     <pre><code>
         container.getInstance(Foo.class);
+    </code></pre>
+</div>
+
+<h3>例子3：通过@Named注解</h3>
+<div class="example">
+    当前类如果对一个接口存在依赖时，该接口可能会存在有多个实现，通过@Named注解，容器就可以判断应该注入哪一个实现<br>
+    <span class="variable" data-name="listener">SonyListener</span>
+    <span class="variable" data-name="musicDevice">MusicDevice</span>
+    <pre><code>
+        public interface Listener{
+            public String playMusic();
+        }
+
+        @Named("SonyListener")
+        public class SonyListener implements Listener{
+            public String playMusic(){
+                return "Play music using Sony";
+            }
+        }
+
+        @Named("AthListener")
+        public class AthListener implements Listener{
+            public String playMusic(){
+                return "Play music using ATH";
+            }
+        }
+
+        public class MusicDevice {
+            private Listener listener;
+
+            @Inject
+            public MusicDevice(@Named("SonyListener")Listener listener) {
+                this.listener = listener;
+            }
+
+            public String playMusic(){
+                return listener.playMusic();
+            }
+        }
+
+    </code></pre>
+    首先<span class="function" data-action="initContainer">初始化一个容器</span>
+    <span class="function" data-action="putNamedClass" data-params="listener" >在容器中注册一个被@Named标注的实现类</span>
+    <span class="function" data-action="getInstance" data-params="musicDevice" data-return="instance">从容器中直接获取一个</span>
+    <span class="assertion" data-action="getClassName" data-expect="equal" data-params="instance">MusicDevice</span>的实例。
+    <pre><code>
+        container.putNamedClass(SonyListener.class)
+        container.getInstance(MusicDevice.class);
     </code></pre>
 </div>
 

@@ -45,8 +45,12 @@ public class Container {
                 throw new CreatInstanceErrorException(String.format("Circle dependency for class %s", constructor.getDeclaringClass().getSimpleName()));
             }
             Class<?> temp;
-            if(namedClassMap.containsKey(item.getName())){
-                temp = namedClassMap.get(item.getName());
+            if(item.isAnnotationPresent(Named.class)){
+                if(namedClassMap.containsKey(item.getAnnotation(Named.class).value())){
+                    temp = namedClassMap.get(item.getAnnotation(Named.class).value());
+                }else {
+                    throw new CreatInstanceErrorException(String.format("Named class %s should be registered to container first", item.getAnnotation(Named.class).value()));
+                }
             }else {
                 temp = item.getType();
             }

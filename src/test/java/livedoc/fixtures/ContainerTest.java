@@ -19,20 +19,24 @@ public class ContainerTest {
         return container.getInstance(ClassUtils.getClassByName(className));
     }
 
-    public String getCircleDependInstance(String className){
-            try{
-                container.getInstance(ClassUtils.getClassByName(className));
-                return "创建实例成功";
-            }catch (CreatInstanceErrorException | ClassNotFoundException e){
-                return "创建实例失败";
-            }
+    public void putNamedClass(String className) throws ClassNotFoundException {
+        container.putNamedClass(ClassUtils.getClassByName(className));
+    }
+
+    public String getCircleDependInstance(String className) {
+        try {
+            container.getInstance(ClassUtils.getClassByName(className));
+            return "创建实例成功";
+        } catch (CreatInstanceErrorException | ClassNotFoundException e) {
+            return "创建实例失败";
+        }
     }
 
     public String getClassName(Object clazz) {
         return clazz.getClass().getSimpleName();
     }
 
-    public boolean isSame(Foo foo){
+    public boolean isSame(Foo foo) {
         return foo.isSame();
     }
 }
